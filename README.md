@@ -1,36 +1,72 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Impostor Futbolero ⚽
 
-## Getting Started
+Un juego social de fútbol donde un jugador es el impostor y los demás deben descubrirlo.
 
-First, run the development server:
+## 🎮 Cómo Jugar
+
+1. **Crear Sala**: Un jugador crea una sala y elige la temática del juego
+2. **Compartir Link**: El host comparte el link de la sala con los demás jugadores
+3. **Unirse**: Los demás jugadores ingresan a la sala usando el link o código
+4. **Iniciar Ronda**: El host inicia la ronda
+5. **Asignaciones**:
+   - Un jugador aleatorio será el **impostor** (no recibe ningún tema)
+   - Los demás jugadores reciben el mismo **jugador/club/tema**
+6. **Jugar**: Los jugadores conversan para descubrir quién es el impostor
+7. **Siguiente Ronda**: El host puede pasar a la siguiente ronda o cambiar la temática
+
+## 🎯 Temáticas Disponibles
+
+- **Jugadores Actuales y Leyendas**: Mezcla de jugadores de todos los tiempos
+- **Jugadores Leyendas**: Solo jugadores históricos del fútbol
+- **Jugadores Actuales**: Jugadores en actividad
+- **Clubes**: Equipos de fútbol famosos
+- **Equipos Históricos (Año Aleatorio)**: Planteles históricos de un año generado aleatoriamente (1950-2024)
+- **Mundial (Año Aleatorio)**: Selecciones de un Mundial aleatorio (1930-2022, excepto 1942 y 1946)
+- **Fútbol Argentino**: Jugadores y clubes argentinos
+
+## 🚀 Instalación y Ejecución
+
+### Desarrollo
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+El juego estará disponible en `http://localhost:3000`
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Producción
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run build
+npm start
+```
 
-## Learn More
+## 🛠️ Tecnologías
 
-To learn more about Next.js, take a look at the following resources:
+- **Next.js 16**: Framework de React
+- **Socket.IO**: Comunicación en tiempo real
+- **TypeScript**: Tipado estático
+- **Tailwind CSS**: Estilos
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 📝 Características
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- ✅ Salas con códigos únicos
+- ✅ Enlace compartible para unirse
+- ✅ Múltiples temáticas
+- ✅ Cambio de temática entre rondas
+- ✅ Sistema de host
+- ✅ Asignación aleatoria de impostor
+- ✅ Interfaz responsive
+- ✅ Tiempo real con Socket.IO
 
-## Deploy on Vercel
+## 🎲 Controles del Host
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- Iniciar ronda
+- Cambiar temática
+- Pasar a siguiente ronda
+- Cerrar sala
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+
+¡Diviértete jugando al Impostor Futbolero! ⚽🎭
