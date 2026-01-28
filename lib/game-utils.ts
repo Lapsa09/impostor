@@ -19,13 +19,11 @@ export const THEME_OPTIONS: ThemeOption[] = [
   },
   {
     id: "equipos-historicos",
-    label: "Equipos Históricos (Año Aleatorio)",
-    usesRandomYear: true,
+    label: "Equipos Históricos",
   },
   {
     id: "mundial-especifico",
-    label: "Mundial (Año Aleatorio)",
-    usesRandomYear: true,
+    label: "Mundiales",
   },
   {
     id: "futbol-argentino",
@@ -124,9 +122,62 @@ const JUGADORES_ARGENTINOS = [
   "Roberto Ayala",
   "Julián Álvarez",
   "Lautaro Martínez",
+  "Mauro Zárate",
+  "Javier Saviola",
+  "Diego Simeone",
+  "Oscar Ruggeri",
+  "Ricardo Bochini",
+  "Leandro Paredes",
+  "Emiliano Martínez",
 ];
 
-export function getSubjectsForTheme(theme: GameTheme, year?: number): string[] {
+const EQUIPOS_HISTORICOS = [
+  // Equipos historicos del siglo xxi como el Barcelona de 2009, el real madrid de 2014, etc.
+  "Barcelona 2009",
+  "Real Madrid 2014",
+  "Manchester United 2008",
+  "Liverpool 2019",
+  "Bayern Munich 2013",
+  "AC Milan 2007",
+  "Inter de Milán 2010",
+  "Juventus 2015",
+  "Ajax 2019",
+  "Chelsea 2012",
+  "PSG 2020",
+  "Atlético Madrid 2014",
+  "Real Madrid 2002",
+  "Barcelona 2015",
+  "Manchester City 2023",
+  "Liverpool 2005",
+  "Bayern Munich 2020",
+  "PSG 2025",
+  "AC Milan 2003",
+  "Real Madrid 2017",
+  "Real Madrid 2022",
+  "Barcelona 2024",
+  "Barcelona 2011",
+  "Boca Juniors 2000",
+  "River Plate 2015",
+  "San Lorenzo 2014",
+  "Independiente 2017",
+  "Boca Juniors 2003",
+  "River Plate 2018",
+];
+
+const MUNDIALES = [
+  "Mundial 1978",
+  "Mundial 1986",
+  "Mundial 1990",
+  "Mundial 1994",
+  "Mundial 2002",
+  "Mundial 2006",
+  "Mundial 2010",
+  "Mundial 2014",
+  "Mundial 2018",
+  "Mundial 2022",
+];
+
+export function getSubjectsForTheme(theme: GameTheme): string[] {
   switch (theme) {
     case "jugadores-actuales-leyendas":
       return [...JUGADORES_ACTUALES, ...JUGADORES_LEYENDAS];
@@ -137,21 +188,9 @@ export function getSubjectsForTheme(theme: GameTheme, year?: number): string[] {
     case "clubes":
       return CLUBES;
     case "equipos-historicos":
-      // Si no hay año, generar uno aleatorio entre 1950 y 2024
-      const equiposYear =
-        year || Math.floor(Math.random() * (2024 - 1950 + 1)) + 1950;
-      return [`Equipos destacados de ${equiposYear}`];
+      return EQUIPOS_HISTORICOS;
     case "mundial-especifico":
-      // Años de mundiales: cada 4 años desde 1930, excepto 1942 y 1946
-      const mundialYears = [];
-      for (let y = 1930; y <= 2022; y += 4) {
-        if (y !== 1942 && y !== 1946) {
-          mundialYears.push(y);
-        }
-      }
-      const mundialYear =
-        year || mundialYears[Math.floor(Math.random() * mundialYears.length)];
-      return [`Selecciones del Mundial ${mundialYear}`];
+      return MUNDIALES;
     case "futbol-argentino":
       return JUGADORES_ARGENTINOS;
     default:
@@ -159,34 +198,10 @@ export function getSubjectsForTheme(theme: GameTheme, year?: number): string[] {
   }
 }
 
-export function getRandomSubject(theme: GameTheme, year?: number): string {
-  const subjects = getSubjectsForTheme(theme, year);
+export function getRandomSubject(theme: GameTheme): string {
+  const subjects = getSubjectsForTheme(theme);
   return subjects[Math.floor(Math.random() * subjects.length)];
 }
-
-export function generateRandomYear(theme: GameTheme): number | undefined {
-  const option = THEME_OPTIONS.find((opt) => opt.id === theme);
-  if (!option?.usesRandomYear) return undefined;
-
-  if (theme === "equipos-historicos") {
-    // Año aleatorio entre 1950 y 2024
-    return Math.floor(Math.random() * (2024 - 1950 + 1)) + 1950;
-  }
-
-  if (theme === "mundial-especifico") {
-    // Años de mundiales
-    const mundialYears = [];
-    for (let y = 1930; y <= 2022; y += 4) {
-      if (y !== 1942 && y !== 1946) {
-        mundialYears.push(y);
-      }
-    }
-    return mundialYears[Math.floor(Math.random() * mundialYears.length)];
-  }
-
-  return undefined;
-}
-
 export function generateRoomCode(): string {
   const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
   let code = "";

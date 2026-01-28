@@ -10,7 +10,6 @@ export type GameTheme =
 export interface ThemeOption {
   id: GameTheme;
   label: string;
-  usesRandomYear?: boolean;
 }
 
 export interface Player {
@@ -24,7 +23,6 @@ export interface Room {
   code: string;
   hostId: string;
   theme: GameTheme;
-  themeYear?: number;
   players: Player[];
   gameStarted: boolean;
   currentRound: number;

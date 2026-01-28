@@ -1,18 +1,16 @@
 import { Server as HTTPServer } from "http";
 import { Server as SocketIOServer } from "socket.io";
 import { Room, Player, GameTheme } from "@/lib/types";
-import {
-  generateRoomCode,
-  getRandomSubject,
-  generateRandomYear,
-} from "@/lib/game-utils";
+import { generateRoomCode, getRandomSubject } from "@/lib/game-utils";
 import { v4 as uuidv4 } from "uuid";
 
 const rooms = new Map<string, Room>();
 
 export function initSocket(httpServer: HTTPServer) {
-  const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(',') || ['http://localhost:3000'];
-  
+  const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(",") || [
+    "http://localhost:3000",
+  ];
+
   const io = new SocketIOServer(httpServer, {
     cors: {
       origin: allowedOrigins,
@@ -29,15 +27,7 @@ export function initSocket(httpServer: HTTPServer) {
     // Crear sala
     socket.on(
       "create-room",
-      ({
-        playerName,
-        theme,
-        themeYear,
-      }: {
-        playerName: string;
-        theme: GameTheme;
-        themeYear?: number;
-      }) => {
+      ({ playerName, theme }: { playerName: string; theme: GameTheme }) => {
         const roomCode = generateRoomCode();
         const playerId = uuidv4();
 
@@ -49,15 +39,11 @@ export function initSocket(httpServer: HTTPServer) {
           isHost: true,
         };
 
-        // Generar año aleatorio si la temática lo requiere
-        const finalYear = themeYear || generateRandomYear(theme);
-
         const room: Room = {
           id: uuidv4(),
           code: roomCode,
           hostId: playerId,
           theme,
-          themeYear: finalYear,
           players: [player],
           gameStarted: false,
           currentRound: 0,
@@ -153,7 +139,7 @@ export function initSocket(httpServer: HTTPServer) {
       room.impostorId = room.players[impostorIndex].id;
 
       // Obtener tema/sujeto aleatorio
-      room.assignedSubject = getRandomSubject(room.theme, room.themeYear);
+      room.assignedSubject = getRandomSubject(room.theme);
       room.gameStarted = true;
       room.currentRound++;
 
@@ -174,11 +160,9 @@ export function initSocket(httpServer: HTTPServer) {
 
         room.theme = theme;
         // Generar año aleatorio si la temática lo requiere
-        room.themeYear = generateRandomYear(theme);
 
         io.to(roomCode).emit("theme-updated", {
           theme,
-          themeYear: room.themeYear,
         });
         io.to(roomCode).emit("room-updated", room);
       },

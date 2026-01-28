@@ -37,12 +37,6 @@ export function RoomHeader({ room, playerId }: RoomHeaderProps) {
               {THEME_OPTIONS.find((option) => option.id === room.theme)?.label}
             </span>
           </div>
-          {room.themeYear && (
-            <div className="flex justify-between text-sm">
-              <span className="text-muted-foreground">Año:</span>
-              <span className="font-medium">{room.themeYear}</span>
-            </div>
-          )}
         </div>
       </CardContent>
     </Card>
