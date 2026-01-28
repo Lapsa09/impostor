@@ -41,14 +41,13 @@ RUN npm install -g pnpm tsx
 
 # Copiar archivos necesarios
 COPY --from=builder /app/public ./public
-COPY --from=builder /app/.next/standalone ./
-COPY --from=builder /app/.next/static ./.next/static
-COPY --from=builder /app/server.ts ./server.ts
-COPY --from=builder /app/lib ./lib
+COPY --from=builder /app/.next ./.next
+COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/package.json ./package.json
 
 USER nextjs
 
 EXPOSE 3000
 
-CMD ["tsx", "server.ts"]
+CMD ["node", "dist/server.js"]

@@ -1,8 +1,42 @@
 # 🎮 Impostor Futbolero - Deployment Guide
 
-## 🚀 Opciones de Deployment
+## ⚠️ Problema con OAuth de Railway?
 
-### Opción 1: Railway (Recomendado - Más fácil)
+**Si tienes problemas conectando GitHub a Railway**, revisa estos archivos:
+- � `RAILWAY_CLI_GUIDE.md` - Deploy con Railway CLI (sin OAuth)
+- 📗 `RENDER_MANUAL_GUIDE.md` - Deploy en Render.com
+- 📙 `OAUTH_TROUBLESHOOTING.md` - Soluciones al error OAuth
+
+---
+
+## �🚀 Opciones de Deployment
+
+### Opción 1A: Railway CLI (Sin OAuth - MÁS FÁCIL)
+
+```bash
+# 1. Instalar Railway CLI
+npm install -g @railway/cli
+
+# 2. Login (abre navegador)
+railway login
+
+# 3. Inicializar proyecto
+railway init
+
+# 4. Deploy
+railway up
+
+# 5. Configurar variables
+railway variables set NODE_ENV=production
+railway variables set HOSTNAME=0.0.0.0
+
+# 6. Ver tu URL
+railway domain
+```
+
+**Ver guía completa:** `RAILWAY_CLI_GUIDE.md`
+
+### Opción 1B: Railway desde GitHub (Con OAuth)
 
 1. Crear cuenta en [Railway.app](https://railway.app)
 2. Conectar tu repositorio de GitHub
@@ -20,7 +54,7 @@
 - ✅ SSL gratis
 - ✅ $5 de crédito gratis al mes
 
-### Opción 2: Render
+### Opción 2: Render (Sin problemas OAuth)
 
 1. Crear cuenta en [Render.com](https://render.com)
 2. Crear nuevo Web Service desde GitHub
