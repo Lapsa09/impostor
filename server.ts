@@ -4,11 +4,13 @@ import next from "next";
 import { initSocket } from "./lib/socket";
 
 const dev = process.env.NODE_ENV !== "production";
-const hostname = "localhost";
+const hostname = process.env.HOSTNAME || "0.0.0.0";
 const port = parseInt(process.env.PORT || "3000", 10);
 
 const app = next({ dev, hostname, port });
 const handle = app.getRequestHandler();
+
+console.log(`🚀 Starting server in ${dev ? 'development' : 'production'} mode`);
 
 app.prepare().then(() => {
   const httpServer = createServer(async (req, res) => {
@@ -30,7 +32,8 @@ app.prepare().then(() => {
     process.exit(1);
   });
 
-  httpServer.listen(port, () => {
-    console.log(`> Ready on http://${hostname}:${port}`);
+  httpServer.listen(port, hostname, () => {
+    console.log(`✅ Server ready on http://${hostname}:${port}`);
+    console.log(`📡 WebSocket ready for connections`);
   });
 });

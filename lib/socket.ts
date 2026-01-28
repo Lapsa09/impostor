@@ -11,11 +11,16 @@ import { v4 as uuidv4 } from "uuid";
 const rooms = new Map<string, Room>();
 
 export function initSocket(httpServer: HTTPServer) {
+  const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(',') || ['http://localhost:3000'];
+  
   const io = new SocketIOServer(httpServer, {
     cors: {
-      origin: "*",
+      origin: allowedOrigins,
       methods: ["GET", "POST"],
+      credentials: true,
     },
+    pingTimeout: 60000,
+    pingInterval: 25000,
   });
 
   io.on("connection", (socket) => {
