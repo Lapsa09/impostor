@@ -37,7 +37,7 @@ export default function RootLayout({
           {children}
           <Toaster duration={1500} />
           <Link
-            className="text-xs mx-auto absolute bottom-4 hover:text-white"
+            className="text-xs mx-auto absolute bottom-0 hover:text-white"
             href="https://es.vecteezy.com/"
           >
             PNGs por Vecteezy

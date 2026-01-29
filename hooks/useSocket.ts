@@ -15,6 +15,7 @@ function initializeSocket() {
       reconnection: true,
       reconnectionAttempts: 5,
       reconnectionDelay: 1000,
+      timeout: 10000, // Timeout de conexión
     });
 
     socket.on("connect", () => {
@@ -37,8 +38,10 @@ function initializeSocket() {
 export function useSocket() {
   const [isConnected, setIsConnected] = useState(() => {
     const socketInstance = initializeSocket();
+    // Retornar el estado de conexión actual del socket
     return socketInstance?.connected || false;
   });
+  const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
     const socketInstance = initializeSocket();
@@ -47,12 +50,28 @@ export function useSocket() {
       const handleConnect = () => {
         console.log("Socket conectado en useSocket:", socketInstance.id);
         setIsConnected(true);
+        // Pequeño delay para asegurar que el socket está completamente listo
+        setTimeout(() => {
+          setIsReady(true);
+        }, 100);
       };
 
       const handleDisconnect = () => {
         console.log("Socket desconectado en useSocket");
         setIsConnected(false);
+        setIsReady(false);
       };
+
+      // Si el socket ya está conectado cuando se monta el componente
+      if (socketInstance.connected) {
+        // Usar setTimeout para evitar setState síncrono en useEffect
+        setTimeout(() => {
+          setIsConnected(true);
+          setTimeout(() => {
+            setIsReady(true);
+          }, 100);
+        }, 0);
+      }
 
       socketInstance.on("connect", handleConnect);
       socketInstance.on("disconnect", handleDisconnect);
@@ -64,5 +83,5 @@ export function useSocket() {
     }
   }, []);
 
-  return { socket, isConnected };
+  return { socket, isConnected: isConnected && isReady };
 }

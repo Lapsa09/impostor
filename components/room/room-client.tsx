@@ -11,6 +11,9 @@ import { ShareCard } from "@/components/room/share-card";
 import { HostControls } from "@/components/room/host-controls";
 import { ImpostorReveal } from "@/components/room/impostor-reveal";
 import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Field, FieldLabel } from "@/components/ui/field";
 import { toast } from "sonner";
 
 interface RoomClientProps {
@@ -24,6 +27,10 @@ export function RoomClient({ roomCode }: RoomClientProps) {
   const initialPlayerId = searchParams.get("playerId") || "";
   const initialPlayerName = searchParams.get("name") || "";
   const [playerId, setPlayerId] = useState<string>(initialPlayerId);
+  const [playerName, setPlayerName] = useState<string>("");
+  const [showNameForm, setShowNameForm] = useState(
+    !initialPlayerId && !initialPlayerName,
+  );
   const [room, setRoom] = useState<Room | null>(null);
   const [isImpostor, setIsImpostor] = useState(false);
   const [assignedSubject, setAssignedSubject] = useState<string>("");
@@ -50,9 +57,8 @@ export function RoomClient({ roomCode }: RoomClientProps) {
           playerName: initialPlayerName,
         });
         initializedRef.current = true;
-      } else {
-        router.push("/");
       }
+      // Si no hay playerId ni name, mostrar formulario de nombre (no redirigir)
     };
 
     if (isConnected) {
@@ -240,6 +246,73 @@ export function RoomClient({ roomCode }: RoomClientProps) {
       router.push("/");
     }
   };
+
+  const handleJoinWithName = (e: React.SubmitEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (socket && playerName.trim()) {
+      console.log("Uniéndose a sala con nombre:", playerName);
+      socket.emit("join-room", {
+        roomCode,
+        playerName: playerName.trim(),
+      });
+      setShowNameForm(false);
+      initializedRef.current = true;
+    }
+  };
+
+  // Si no hay playerId ni initialPlayerName, mostrar formulario
+  if (showNameForm && !playerId && !room) {
+    return (
+      <Card className="p-8">
+        <CardContent className="space-y-4">
+          <div className="text-center space-y-2">
+            <h2 className="text-2xl font-bold">Unirse a la sala</h2>
+            <p className="text-muted-foreground">
+              Código de sala:{" "}
+              <span className="font-bold text-green-600">{roomCode}</span>
+            </p>
+          </div>
+          <form onSubmit={handleJoinWithName} className="space-y-4">
+            <Field>
+              <FieldLabel htmlFor="playerName">Tu nombre</FieldLabel>
+              <Input
+                id="playerName"
+                type="text"
+                value={playerName}
+                onChange={(e) => setPlayerName(e.target.value)}
+                placeholder="Ingresa tu nombre"
+                autoFocus
+              />
+            </Field>
+            <div className="space-y-2">
+              <Button
+                type="submit"
+                disabled={!playerName.trim() || !isConnected}
+                className="w-full bg-green-600 hover:bg-green-700"
+                size="lg"
+              >
+                Unirse
+              </Button>
+              <Button
+                type="button"
+                onClick={() => router.push("/")}
+                variant="outline"
+                className="w-full"
+                size="lg"
+              >
+                Volver
+              </Button>
+            </div>
+            {!isConnected && (
+              <div className="text-center text-sm text-yellow-600">
+                Conectando al servidor...
+              </div>
+            )}
+          </form>
+        </CardContent>
+      </Card>
+    );
+  }
 
   if (!room) {
     return (

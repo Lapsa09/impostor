@@ -12,9 +12,19 @@ interface ShareCardProps {
 export function ShareCard({ roomCode }: ShareCardProps) {
   const shareUrl = `${typeof window !== "undefined" ? window.location.origin : ""}/room/${roomCode}`;
 
-  const handleCopyLink = () => {
-    navigator.clipboard.writeText(shareUrl);
-    toast.success("¡Enlace copiado!");
+  const handleCopyLink = async () => {
+    try {
+      if (!navigator.clipboard) {
+        toast.error("Función de copiar no disponible.");
+        return;
+      }
+
+      await navigator.clipboard.writeText(shareUrl);
+      toast.success("¡Enlace copiado!");
+    } catch (err) {
+      console.error("Error al copiar:", err);
+      toast.error("No se pudo copiar el enlace");
+    }
   };
 
   const handleShare = async () => {
@@ -29,7 +39,7 @@ export function ShareCard({ roomCode }: ShareCardProps) {
         console.log("Error al compartir:", err);
       }
     } else {
-      handleCopyLink();
+      await handleCopyLink();
     }
   };
 
