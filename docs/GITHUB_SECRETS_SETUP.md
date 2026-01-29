@@ -31,9 +31,11 @@ railway whoami --token
 **Copias el token que aparece** y lo agregas como secret con el nombre `RAILWAY_TOKEN`
 
 **Ejemplo del output:**
+
 ```
 github|12345678|my-token-here-abc123xyz789
 ```
+
 Copia TODO ese string.
 
 ---
@@ -43,6 +45,7 @@ Copia TODO ese string.
 **Qué es:** Password para acceder al panel de administración (`/admin`)
 
 **Valor sugerido:** Una contraseña segura, por ejemplo:
+
 ```
 Mi-Super-Password-Secreto-2026
 ```
@@ -62,6 +65,7 @@ railway service list
 ```
 
 **Output ejemplo:**
+
 ```
 ┌──────────────────────────────────────┬────────────┬──────┐
 │ ID                                   │ Name       │ ... │
@@ -81,6 +85,7 @@ Copia el **ID** y agrégalo como secret con el nombre `RAILWAY_SERVICE_ID`.
 Una vez agregados los secrets:
 
 1. Haz un commit de prueba:
+
    ```bash
    git add .
    git commit -m "test: verificar CI/CD"
@@ -100,6 +105,7 @@ Una vez agregados los secrets:
 ### Error: "RAILWAY_TOKEN not found"
 
 Verifica que:
+
 - El secret se llame exactamente `RAILWAY_TOKEN` (case-sensitive)
 - Copiaste el token completo del comando `railway whoami --token`
 - El token no tiene espacios extra al inicio o final

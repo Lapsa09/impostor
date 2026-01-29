@@ -5,16 +5,19 @@
 El panel de administración está protegido por una clave secreta. Para acceder:
 
 1. **Configura la clave de administrador** en tu archivo `.env`:
+
    ```bash
    ADMIN_KEY=tu-clave-secreta-aqui
    ```
 
 2. **Accede al panel** usando la URL con el parámetro `key`:
+
    ```
    http://localhost:3000/admin?key=tu-clave-secreta-aqui
    ```
-   
+
    En producción:
+
    ```
    https://tu-dominio.com/admin?key=tu-clave-secreta-aqui
    ```
@@ -65,6 +68,7 @@ El panel permite administrar todos los datos del juego organizados en 6 categor�
 Los datos se almacenan en: **`data/subjects.json`**
 
 Este es un archivo JSON estático que puedes:
+
 - ✏️ Editar manualmente si lo prefieres
 - 📦 Hacer backup regularmente
 - 🔄 **NO se versiona en Git** - Los cambios locales no afectan al repositorio
@@ -100,6 +104,7 @@ Este es un archivo JSON estático que puedes:
 ### Recomendaciones de Seguridad:
 
 1. Usa una clave compleja y única:
+
    ```bash
    ADMIN_KEY=ImPostor-F00tball-2026-Sup3rS3cr3t!
    ```
@@ -142,14 +147,17 @@ Este es un archivo JSON estático que puedes:
 ## 🐛 Solución de Problemas
 
 ### "Clave de administrador inválida"
+
 - Verifica que `ADMIN_KEY` en `.env` coincida con el parámetro `key` en la URL
 - Reinicia el servidor después de cambiar `.env`
 
 ### "Error al guardar los datos"
+
 - Verifica permisos de escritura en la carpeta `data/`
 - Revisa los logs del servidor para más detalles
 
 ### Los cambios no se reflejan
+
 - Asegúrate de hacer click en "Guardar Cambios"
 - En desarrollo, recarga la aplicación
 - En producción, puede requerir un redeploy

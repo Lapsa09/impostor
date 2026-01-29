@@ -7,10 +7,12 @@ Este proyecto usa GitHub Actions para automatizar el proceso de build, testing y
 ### 1. CI - Build & Test (`ci.yml`)
 
 **Se ejecuta en:**
+
 - Push a `main` o `develop`
 - Pull Requests a `main` o `develop`
 
 **Pasos:**
+
 1. ✅ Checkout del código
 2. 📦 Instala dependencias con pnpm
 3. 🔍 Ejecuta ESLint (continúa aunque falle)
@@ -21,10 +23,12 @@ Este proyecto usa GitHub Actions para automatizar el proceso de build, testing y
 ### 2. Deploy to Railway (`deploy.yml`)
 
 **Se ejecuta en:**
+
 - Push a `main` (automático)
 - Manualmente desde GitHub Actions tab
 
 **Pasos:**
+
 1. ✅ Ejecuta todos los pasos del CI
 2. 🚂 Instala Railway CLI
 3. 🚀 Deploy automático a Railway
@@ -113,6 +117,7 @@ git push origin main
 ## 🆚 Comparación: Antes vs Ahora
 
 ### Antes (Manual):
+
 ```bash
 # En tu computadora local
 pnpm run build
@@ -126,6 +131,7 @@ railway up
 ❌ No hay historial de deployments
 
 ### Ahora (Automatizado):
+
 ```bash
 # Solo haces
 git push origin main
@@ -187,6 +193,7 @@ railway variables
 ## 🎯 Próximos Pasos (Opcional)
 
 Podrías agregar:
+
 - 🧪 Tests unitarios (Jest, Vitest)
 - 🎨 Screenshot testing con Playwright
 - 📊 Code coverage reports

@@ -12,7 +12,7 @@ export async function GET() {
     console.error("Error reading subjects data:", error);
     return NextResponse.json(
       { error: "Error al leer los datos" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -20,13 +20,13 @@ export async function GET() {
 export async function POST(request: NextRequest) {
   try {
     const { adminKey } = await request.json();
-    
+
     // Validar clave de administrador
     const validKey = process.env.ADMIN_KEY || "impostor-admin-2026";
     if (adminKey !== validKey) {
       return NextResponse.json(
         { error: "Clave de administrador inválida" },
-        { status: 401 }
+        { status: 401 },
       );
     }
 
@@ -36,7 +36,7 @@ export async function POST(request: NextRequest) {
     console.error("Error reading subjects data:", error);
     return NextResponse.json(
       { error: "Error al leer los datos" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
