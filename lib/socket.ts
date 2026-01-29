@@ -5,6 +5,7 @@ import { generateRoomCode, getRandomSubject } from "@/lib/game-utils";
 import { v4 as uuidv4 } from "uuid";
 
 const rooms = new Map<string, Room>();
+const socketToPlayer = new Map<string, { roomCode: string; playerId: string }>();
 
 export function initSocket(httpServer: HTTPServer) {
   const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(",") || [
@@ -52,6 +53,7 @@ export function initSocket(httpServer: HTTPServer) {
 
         rooms.set(roomCode, room);
         socket.join(roomCode);
+        socketToPlayer.set(socket.id, { roomCode, playerId });
 
         console.log("Sala creada. Total de salas:", rooms.size);
 
@@ -115,6 +117,7 @@ export function initSocket(httpServer: HTTPServer) {
 
         room.players.push(player);
         socket.join(roomCode);
+        socketToPlayer.set(socket.id, { roomCode, playerId });
 
         socket.emit("joined-room", { playerId, room });
         io.to(roomCode).emit("room-updated", room);
@@ -306,6 +309,7 @@ export function initSocket(httpServer: HTTPServer) {
         // Notificar a todos sobre la actualización
         io.to(roomCode).emit("room-updated", room);
         socket.leave(roomCode);
+        socketToPlayer.delete(socket.id);
       },
     );
 
@@ -313,55 +317,70 @@ export function initSocket(httpServer: HTTPServer) {
     socket.on("disconnect", () => {
       console.log("Cliente desconectado:", socket.id);
       
-      // Buscar en qué salas estaba el cliente y removerlo
-      rooms.forEach((room, roomCode) => {
-        const playerIndex = room.players.findIndex(
-          (p) => p.id === socket.id,
+      // Buscar el mapping del socket al jugador
+      const mapping = socketToPlayer.get(socket.id);
+      
+      if (!mapping) {
+        // Socket no estaba en ninguna sala
+        return;
+      }
+
+      const { roomCode, playerId } = mapping;
+      const room = rooms.get(roomCode);
+
+      if (!room) {
+        socketToPlayer.delete(socket.id);
+        return;
+      }
+
+      const player = room.players.find((p) => p.id === playerId);
+      
+      if (!player) {
+        socketToPlayer.delete(socket.id);
+        return;
+      }
+
+      console.log(
+        "Jugador",
+        player.name,
+        "desconectado de sala:",
+        roomCode,
+      );
+
+      // Remover jugador
+      room.players = room.players.filter((p) => p.id !== playerId);
+
+      // Si no quedan jugadores, cerrar la sala
+      if (room.players.length === 0) {
+        console.log("Última persona desconectada, cerrando sala:", roomCode);
+        rooms.delete(roomCode);
+        io.to(roomCode).emit("room-closed");
+        socketToPlayer.delete(socket.id);
+        return;
+      }
+
+      // Si el host se desconectó, transferir host a otro jugador
+      if (room.hostId === playerId && room.players.length > 0) {
+        const newHost = room.players[0];
+        room.hostId = newHost.id;
+        newHost.isHost = true;
+
+        console.log(
+          "Host transferido a:",
+          newHost.name,
+          "en sala:",
+          roomCode,
         );
-        
-        if (playerIndex !== -1) {
-          const player = room.players[playerIndex];
-          console.log(
-            "Jugador",
-            player.name,
-            "desconectado de sala:",
-            roomCode,
-          );
 
-          // Remover jugador
-          room.players = room.players.filter((p) => p.id !== player.id);
+        io.to(roomCode).emit("host-transferred", {
+          newHostId: newHost.id,
+          newHostName: newHost.name,
+        });
+      }
 
-          // Si no quedan jugadores, cerrar la sala
-          if (room.players.length === 0) {
-            console.log("Última persona desconectada, cerrando sala:", roomCode);
-            rooms.delete(roomCode);
-            io.to(roomCode).emit("room-closed");
-            return;
-          }
-
-          // Si el host se desconectó, transferir host a otro jugador
-          if (room.hostId === player.id && room.players.length > 0) {
-            const newHost = room.players[0];
-            room.hostId = newHost.id;
-            newHost.isHost = true;
-
-            console.log(
-              "Host transferido a:",
-              newHost.name,
-              "en sala:",
-              roomCode,
-            );
-
-            io.to(roomCode).emit("host-transferred", {
-              newHostId: newHost.id,
-              newHostName: newHost.name,
-            });
-          }
-
-          // Notificar a todos sobre la actualización
-          io.to(roomCode).emit("room-updated", room);
-        }
-      });
+      // Notificar a todos sobre la actualización
+      io.to(roomCode).emit("room-updated", room);
+      socketToPlayer.delete(socket.id);
     });
   });
 
