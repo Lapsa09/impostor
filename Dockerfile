@@ -22,8 +22,8 @@ COPY . .
 # Instalar pnpm en builder
 RUN npm install -g pnpm
 
-# Build Next.js
-RUN pnpm run build
+# Build Next.js with data initialization
+RUN pnpm run build:ci
 
 # Imagen de producción
 FROM base AS runner
@@ -45,6 +45,7 @@ COPY --from=builder /app/.next ./.next
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/package.json ./package.json
+COPY --from=builder /app/data ./data
 
 USER nextjs
 
