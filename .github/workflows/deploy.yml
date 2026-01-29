@@ -1,12 +1,9 @@
 name: Deploy to Railway
 
-# TEMPORALMENTE DESACTIVADO - OAuth issue prevents token creation
-# Use 'railway up' locally instead
 on:
-    workflow_dispatch: # Solo manual, no automático
-    # push:
-    #   branches: [main]
-
+  push:
+    branches: [main]
+  workflow_dispatch: # Permite ejecutar manualmente desde GitHub
 jobs:
     deploy:
         runs-on: ubuntu-latest
