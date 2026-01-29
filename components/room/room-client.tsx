@@ -201,7 +201,7 @@ export function RoomClient({ roomCode }: RoomClientProps) {
 
   if (!room) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-linear-to-br from-green-600 via-green-700 to-green-900">
+      <div className="flex min-h-dvh items-center justify-center bg-linear-to-br from-green-600 via-green-700 to-green-900">
         <Card className="p-8">
           <CardContent className="text-center">
             <div className="text-xl font-semibold">Cargando sala...</div>
@@ -214,7 +214,7 @@ export function RoomClient({ roomCode }: RoomClientProps) {
   const isHost = room.hostId === playerId;
 
   return (
-    <div className="min-h-dvh bg-linear-to-br from-green-600 via-green-700 to-green-900 p-4">
+    <>
       <div className="max-w-6xl mx-auto space-y-4">
         <RoomHeader room={room} playerId={playerId} />
 
@@ -250,6 +250,6 @@ export function RoomClient({ roomCode }: RoomClientProps) {
           subject={revealData.subject}
         />
       )}
-    </div>
+    </>
   );
 }
