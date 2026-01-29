@@ -1,14 +1,16 @@
 import { Room } from "@/lib/types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Users } from "lucide-react";
+import { Users, LogOut } from "lucide-react";
 import { THEME_OPTIONS } from "@/lib/game-utils";
+import { Button } from "@/components/ui/button";
 
 interface RoomHeaderProps {
   room: Room;
   playerId: string;
+  onLeaveRoom: () => void;
 }
 
-export function RoomHeader({ room, playerId }: RoomHeaderProps) {
+export function RoomHeader({ room, playerId, onLeaveRoom }: RoomHeaderProps) {
   const isHost = room.hostId === playerId;
 
   return (
@@ -18,9 +20,20 @@ export function RoomHeader({ room, playerId }: RoomHeaderProps) {
           <CardTitle className="text-2xl font-bold">
             Sala: {room.code}
           </CardTitle>
-          <div className="flex items-center gap-2 text-muted-foreground">
-            <Users className="w-5 h-5" />
-            <span className="text-sm">{room.players.length} jugadores</span>
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2 text-muted-foreground">
+              <Users className="w-5 h-5" />
+              <span className="text-sm">{room.players.length} jugadores</span>
+            </div>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={onLeaveRoom}
+              className="gap-2"
+            >
+              <LogOut className="w-4 h-4" />
+              Salir
+            </Button>
           </div>
         </div>
         {isHost && (

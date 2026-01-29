@@ -135,8 +135,22 @@ export function RoomClient({ roomCode }: RoomClientProps) {
     };
 
     const handleRoomClosed = () => {
-      toast.info("La sala ha sido cerrada por el anfitrión");
+      toast.info("La sala ha sido cerrada");
       router.push("/");
+    };
+
+    const handleHostTransferred = ({
+      newHostId,
+      newHostName,
+    }: {
+      newHostId: string;
+      newHostName: string;
+    }) => {
+      if (playerId === newHostId) {
+        toast.success("Ahora eres el anfitrión de la sala");
+      } else {
+        toast.info(`${newHostName} es ahora el anfitrión de la sala`);
+      }
     };
 
     const handleError = ({ message }: { message: string }) => {
@@ -171,6 +185,7 @@ export function RoomClient({ roomCode }: RoomClientProps) {
     socket.on("joined-room", handleJoinedRoom);
     socket.on("room-updated", handleRoomUpdated);
     socket.on("room-closed", handleRoomClosed);
+    socket.on("host-transferred", handleHostTransferred);
     socket.on("room-not-found", handleRoomNotFound);
     socket.on("error", handleError);
     socket.on("impostor-reveal", handleImpostorReveal);
@@ -180,11 +195,31 @@ export function RoomClient({ roomCode }: RoomClientProps) {
       socket.off("joined-room", handleJoinedRoom);
       socket.off("room-updated", handleRoomUpdated);
       socket.off("room-closed", handleRoomClosed);
+      socket.off("host-transferred", handleHostTransferred);
       socket.off("room-not-found", handleRoomNotFound);
       socket.off("error", handleError);
       socket.off("impostor-reveal", handleImpostorReveal);
     };
   }, [socket, isConnected, playerId, initialPlayerName, router]);
+
+  // Cleanup cuando se cierra el navegador o se abandona la página
+  useEffect(() => {
+    const handleBeforeUnload = () => {
+      if (socket && playerId && roomCode) {
+        socket.emit("leave-room", { roomCode, playerId });
+      }
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+      // Emitir leave-room cuando el componente se desmonta
+      if (socket && playerId && roomCode) {
+        socket.emit("leave-room", { roomCode, playerId });
+      }
+    };
+  }, [socket, playerId, roomCode]);
 
   // Funciones de control
   const handleStartRound = () => {
@@ -217,6 +252,14 @@ export function RoomClient({ roomCode }: RoomClientProps) {
     }
   };
 
+  const handleLeaveRoom = () => {
+    if (socket) {
+      socket.emit("leave-room", { roomCode, playerId });
+      toast.info("Saliste de la sala");
+      router.push("/");
+    }
+  };
+
   if (!room) {
     return (
       <Card className="p-8">
@@ -232,7 +275,7 @@ export function RoomClient({ roomCode }: RoomClientProps) {
   return (
     <>
       <div className="max-w-6xl mx-auto space-y-4">
-        <RoomHeader room={room} playerId={playerId} />
+        <RoomHeader room={room} playerId={playerId} onLeaveRoom={handleLeaveRoom} />
 
         <div className="grid gap-4 md:grid-cols-2">
           <div className="space-y-4">

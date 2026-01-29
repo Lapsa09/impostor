@@ -253,11 +253,115 @@ export function initSocket(httpServer: HTTPServer) {
 
       io.to(roomCode).emit("room-closed");
       rooms.delete(roomCode);
+      console.log("Sala cerrada:", roomCode, "Total de salas:", rooms.size);
     });
+
+    // Salir de la sala
+    socket.on(
+      "leave-room",
+      ({ roomCode, playerId }: { roomCode: string; playerId: string }) => {
+        const room = rooms.get(roomCode);
+
+        if (!room) {
+          return;
+        }
+
+        console.log(
+          "Jugador",
+          playerId,
+          "saliendo de sala:",
+          roomCode,
+        );
+
+        // Remover jugador de la sala
+        room.players = room.players.filter((p) => p.id !== playerId);
+
+        // Si no quedan jugadores, cerrar la sala
+        if (room.players.length === 0) {
+          console.log("Última persona salió, cerrando sala:", roomCode);
+          rooms.delete(roomCode);
+          io.to(roomCode).emit("room-closed");
+          return;
+        }
+
+        // Si el host salió, transferir host a otro jugador
+        if (room.hostId === playerId && room.players.length > 0) {
+          const newHost = room.players[0];
+          room.hostId = newHost.id;
+          newHost.isHost = true;
+
+          console.log(
+            "Host transferido a:",
+            newHost.name,
+            "en sala:",
+            roomCode,
+          );
+
+          io.to(roomCode).emit("host-transferred", {
+            newHostId: newHost.id,
+            newHostName: newHost.name,
+          });
+        }
+
+        // Notificar a todos sobre la actualización
+        io.to(roomCode).emit("room-updated", room);
+        socket.leave(roomCode);
+      },
+    );
 
     // Desconexión
     socket.on("disconnect", () => {
       console.log("Cliente desconectado:", socket.id);
+      
+      // Buscar en qué salas estaba el cliente y removerlo
+      rooms.forEach((room, roomCode) => {
+        const playerIndex = room.players.findIndex(
+          (p) => p.id === socket.id,
+        );
+        
+        if (playerIndex !== -1) {
+          const player = room.players[playerIndex];
+          console.log(
+            "Jugador",
+            player.name,
+            "desconectado de sala:",
+            roomCode,
+          );
+
+          // Remover jugador
+          room.players = room.players.filter((p) => p.id !== player.id);
+
+          // Si no quedan jugadores, cerrar la sala
+          if (room.players.length === 0) {
+            console.log("Última persona desconectada, cerrando sala:", roomCode);
+            rooms.delete(roomCode);
+            io.to(roomCode).emit("room-closed");
+            return;
+          }
+
+          // Si el host se desconectó, transferir host a otro jugador
+          if (room.hostId === player.id && room.players.length > 0) {
+            const newHost = room.players[0];
+            room.hostId = newHost.id;
+            newHost.isHost = true;
+
+            console.log(
+              "Host transferido a:",
+              newHost.name,
+              "en sala:",
+              roomCode,
+            );
+
+            io.to(roomCode).emit("host-transferred", {
+              newHostId: newHost.id,
+              newHostName: newHost.name,
+            });
+          }
+
+          // Notificar a todos sobre la actualización
+          io.to(roomCode).emit("room-updated", room);
+        }
+      });
     });
   });
 
