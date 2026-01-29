@@ -6,6 +6,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import Image from "next/image";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
 
@@ -25,7 +26,12 @@ export default async function CreateRoom({
       <Card className="w-full max-w-md">
         <CardHeader className="text-center space-y-2">
           <div className="inline-flex items-center justify-center w-20 h-20 bg-green-600 rounded-full mb-4 mx-auto">
-            <span className="text-4xl">⚽</span>
+            <Image
+              src="/icon1.png"
+              alt="Impostor Futbolero"
+              width={40}
+              height={40}
+            />
           </div>
           <CardTitle className="text-3xl font-bold text-green-800">
             Crear Sala

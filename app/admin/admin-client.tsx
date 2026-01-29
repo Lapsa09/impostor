@@ -137,7 +137,7 @@ export default function AdminClient() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-dvh flex items-center justify-center">
         <div className="text-center">
           <Lock className="w-12 h-12 mx-auto mb-4 animate-pulse" />
           <p className="text-lg">Autenticando...</p>
@@ -148,7 +148,7 @@ export default function AdminClient() {
 
   if (!isAuthenticated || !data) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-dvh flex items-center justify-center">
         <Card className="w-full max-w-md">
           <CardHeader>
             <CardTitle className="text-center flex items-center justify-center gap-2">
@@ -167,72 +167,72 @@ export default function AdminClient() {
   }
 
   return (
-    <div className="min-h-screen bg-background p-4">
-      <div className="max-w-7xl mx-auto space-y-6">
-        <div className="flex items-center justify-between">
-          <h1 className="text-3xl font-bold">Panel de Administración</h1>
-          <Button
-            onClick={handleSave}
-            disabled={isSaving}
-            className="bg-green-600 hover:bg-green-700"
-            size="lg"
-          >
-            <Save className="w-4 h-4 mr-2" />
-            {isSaving ? "Guardando..." : "Guardar Cambios"}
-          </Button>
-        </div>
+    <Card className="max-w-7xl w-full mx-auto space-y-6">
+      <CardHeader className="flex flex-col md:flex-row items-center justify-between">
+        <CardTitle className="text-2xl">Panel de Administración</CardTitle>
 
-        <div className="grid gap-6 md:grid-cols-2">
-          {(Object.keys(data) as Array<keyof SubjectsData>).map((category) => (
-            <Card key={category}>
-              <CardHeader>
-                <CardTitle>{CATEGORY_LABELS[category]}</CardTitle>
-                <p className="text-sm text-muted-foreground">
-                  {data[category].length} elementos
-                </p>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex gap-2">
-                  <Input
-                    placeholder="Agregar nuevo..."
-                    value={newItems[category]}
-                    onChange={(e) =>
-                      setNewItems({ ...newItems, [category]: e.target.value })
-                    }
-                    onKeyPress={(e) => {
-                      if (e.key === "Enter") {
-                        handleAddItem(category);
-                      }
-                    }}
-                  />
-                  <Button onClick={() => handleAddItem(category)} size="icon">
-                    <Plus className="w-4 h-4" />
-                  </Button>
-                </div>
+        <Button
+          onClick={handleSave}
+          disabled={isSaving}
+          className="bg-green-600 hover:bg-green-700"
+          size="lg"
+        >
+          <Save size={16} />
+          {isSaving ? "Guardando..." : "Guardar Cambios"}
+        </Button>
+      </CardHeader>
 
-                <div className="max-h-96 overflow-y-auto space-y-2">
-                  {data[category].map((item, index) => (
-                    <div
-                      key={index}
-                      className="flex items-center justify-between p-2 bg-secondary rounded-md"
+      <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6">
+        {(Object.keys(data) as Array<keyof SubjectsData>).map((category) => (
+          <div key={category}>
+            <div>
+              <h2>{CATEGORY_LABELS[category]}</h2>
+              <p className="text-sm text-muted-foreground">
+                {data[category].length} elementos
+              </p>
+            </div>
+            <div className="space-y-4">
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  handleAddItem(category);
+                }}
+                className="flex gap-2"
+              >
+                <Input
+                  placeholder="Agregar nuevo..."
+                  value={newItems[category]}
+                  onChange={(e) =>
+                    setNewItems({ ...newItems, [category]: e.target.value })
+                  }
+                />
+                <Button type="submit" size="icon">
+                  <Plus className="w-4 h-4" />
+                </Button>
+              </form>
+
+              <div className="max-h-96 overflow-y-auto space-y-2">
+                {data[category].map((item, index) => (
+                  <div
+                    key={index}
+                    className="flex items-center justify-between p-2 bg-secondary rounded-md"
+                  >
+                    <span className="text-sm">{item}</span>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => handleRemoveItem(category, index)}
+                      className="text-red-600 hover:text-red-700 hover:bg-red-50"
                     >
-                      <span className="text-sm">{item}</span>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => handleRemoveItem(category, index)}
-                        className="text-red-600 hover:text-red-700 hover:bg-red-50"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </Button>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+                      <Trash2 className="w-4 h-4" />
+                    </Button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        ))}
       </div>
-    </div>
+    </Card>
   );
 }
