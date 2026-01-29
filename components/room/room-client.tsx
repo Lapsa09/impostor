@@ -214,7 +214,7 @@ export function RoomClient({ roomCode }: RoomClientProps) {
   const isHost = room.hostId === playerId;
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-green-600 via-green-700 to-green-900 p-4">
+    <div className="min-h-dvh bg-linear-to-br from-green-600 via-green-700 to-green-900 p-4">
       <div className="max-w-6xl mx-auto space-y-4">
         <RoomHeader room={room} playerId={playerId} />
 
