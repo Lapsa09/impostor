@@ -1,9 +1,11 @@
 name: Deploy to Railway
 
+# Deploy manual recomendado: railway up
+# Railway CLI token authentication es compleja para CI/CD
 on:
-  push:
-    branches: [main]
-  workflow_dispatch: # Permite ejecutar manualmente desde GitHub
+  workflow_dispatch: # Solo manual desde GitHub UI
+  # push:
+  #   branches: [main]  # Desactivado - usar 'railway up' localmente
 jobs:
     deploy:
         runs-on: ubuntu-latest
