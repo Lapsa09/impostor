@@ -77,10 +77,14 @@ export function RoomClient({ roomCode }: RoomClientProps) {
       console.log("Datos de sala recibidos:", data);
       setRoom(data);
 
-      if (data.gameStarted && data.impostorId) {
-        setIsImpostor(data.impostorId === playerId);
+      if (data.gameStarted) {
+        const isPlayerImpostor = data.impostorIds
+          ? data.impostorIds.includes(playerId)
+          : data.impostorId === playerId;
+
+        setIsImpostor(isPlayerImpostor);
         setAssignedSubject(
-          data.impostorId === playerId
+          isPlayerImpostor
             ? "IMPOSTOR"
             : data.assignedSubject || "Esperando...",
         );
@@ -98,10 +102,14 @@ export function RoomClient({ roomCode }: RoomClientProps) {
       setPlayerId(newPlayerId);
       setRoom(updatedRoom);
 
-      if (updatedRoom.gameStarted && updatedRoom.impostorId) {
-        setIsImpostor(updatedRoom.impostorId === newPlayerId);
+      if (updatedRoom.gameStarted) {
+        const isPlayerImpostor = updatedRoom.impostorIds
+          ? updatedRoom.impostorIds.includes(newPlayerId)
+          : updatedRoom.impostorId === newPlayerId;
+
+        setIsImpostor(isPlayerImpostor);
         setAssignedSubject(
-          updatedRoom.impostorId === newPlayerId
+          isPlayerImpostor
             ? "IMPOSTOR"
             : updatedRoom.assignedSubject || initialPlayerName,
         );
@@ -112,10 +120,14 @@ export function RoomClient({ roomCode }: RoomClientProps) {
       console.log("Sala actualizada:", updatedRoom);
       setRoom(updatedRoom);
 
-      if (updatedRoom.gameStarted && updatedRoom.impostorId) {
-        setIsImpostor(updatedRoom.impostorId === playerId);
+      if (updatedRoom.gameStarted) {
+        const isPlayerImpostor = updatedRoom.impostorIds
+          ? updatedRoom.impostorIds.includes(playerId)
+          : updatedRoom.impostorId === playerId;
+
+        setIsImpostor(isPlayerImpostor);
         setAssignedSubject(
-          updatedRoom.impostorId === playerId
+          isPlayerImpostor
             ? "IMPOSTOR"
             : updatedRoom.assignedSubject || "Esperando...",
         );
@@ -193,6 +205,12 @@ export function RoomClient({ roomCode }: RoomClientProps) {
     }
   };
 
+  const handleChangeNumImpostors = (numImpostors: number) => {
+    if (socket) {
+      socket.emit("update-num-impostors", { roomCode, numImpostors });
+    }
+  };
+
   const handleCloseRoom = () => {
     if (socket) {
       socket.emit("close-room", { roomCode });
@@ -231,12 +249,16 @@ export function RoomClient({ roomCode }: RoomClientProps) {
 
             <HostControls
               isHost={isHost}
+              enoughPlayers={room.players.length >= 3}
               hasRound={room.gameStarted}
               onStartRound={handleStartRound}
               onNextRound={handleNextRound}
               onChangeTheme={handleChangeTheme}
+              onChangeNumImpostors={handleChangeNumImpostors}
               onCloseRoom={handleCloseRoom}
               currentTheme={room.theme}
+              playerCount={room.players.length}
+              numImpostors={room.numImpostors}
             />
           </div>
         </div>

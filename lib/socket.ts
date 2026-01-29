@@ -47,6 +47,7 @@ export function initSocket(httpServer: HTTPServer) {
           players: [player],
           gameStarted: false,
           currentRound: 0,
+          numImpostors: 1, // Por defecto 1 impostor
         };
 
         rooms.set(roomCode, room);
@@ -129,14 +130,16 @@ export function initSocket(httpServer: HTTPServer) {
         return;
       }
 
-      if (room.players.length < 2) {
-        socket.emit("error", { message: "Se necesitan al menos 2 jugadores" });
-        return;
-      }
+      // Seleccionar impostores aleatorios según la cantidad configurada
+      const numImpostors = Math.min(room.numImpostors, room.players.length);
+      const shuffledPlayers = [...room.players].sort(() => Math.random() - 0.5);
+      const impostorIds = shuffledPlayers
+        .slice(0, numImpostors)
+        .map((p) => p.id);
 
-      // Seleccionar impostor aleatorio
-      const impostorIndex = Math.floor(Math.random() * room.players.length);
-      room.impostorId = room.players[impostorIndex].id;
+      room.impostorIds = impostorIds;
+      // Mantener impostorId para compatibilidad (primer impostor)
+      room.impostorId = impostorIds[0];
 
       // Obtener tema/sujeto aleatorio
       room.assignedSubject = getRandomSubject(room.theme);
@@ -168,6 +171,28 @@ export function initSocket(httpServer: HTTPServer) {
       },
     );
 
+    // Actualizar número de impostores
+    socket.on(
+      "update-num-impostors",
+      ({
+        roomCode,
+        numImpostors,
+      }: {
+        roomCode: string;
+        numImpostors: number;
+      }) => {
+        const room = rooms.get(roomCode);
+
+        if (!room) {
+          socket.emit("error", { message: "Sala no encontrada" });
+          return;
+        }
+
+        room.numImpostors = numImpostors;
+        io.to(roomCode).emit("room-updated", room);
+      },
+    );
+
     // Siguiente ronda
     socket.on("next-round", ({ roomCode }: { roomCode: string }) => {
       const room = rooms.get(roomCode);
@@ -177,12 +202,29 @@ export function initSocket(httpServer: HTTPServer) {
         return;
       }
 
-      // Revelar al impostor antes de resetear
-      if (room.impostorId && room.assignedSubject) {
+      // Revelar impostores antes de resetear
+      if (
+        room.impostorIds &&
+        room.impostorIds.length > 0 &&
+        room.assignedSubject
+      ) {
+        const impostors = room.players.filter((p) =>
+          room.impostorIds?.includes(p.id),
+        );
+        const impostorNames = impostors.map((i) => i.name);
+
+        io.to(roomCode).emit("impostor-reveal", {
+          impostorName: impostorNames.join(", "),
+          impostorNames,
+          subject: room.assignedSubject,
+        });
+      } else if (room.impostorId && room.assignedSubject) {
+        // Fallback para compatibilidad
         const impostor = room.players.find((p) => p.id === room.impostorId);
         if (impostor) {
           io.to(roomCode).emit("impostor-reveal", {
             impostorName: impostor.name,
+            impostorNames: [impostor.name],
             subject: room.assignedSubject,
           });
         }
@@ -192,6 +234,7 @@ export function initSocket(httpServer: HTTPServer) {
       setTimeout(() => {
         room.gameStarted = false;
         room.impostorId = undefined;
+        room.impostorIds = undefined;
         room.assignedSubject = undefined;
 
         io.to(roomCode).emit("round-reset");

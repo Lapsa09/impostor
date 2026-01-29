@@ -27,7 +27,9 @@ export interface Room {
   gameStarted: boolean;
   currentRound: number;
   impostorId?: string;
+  impostorIds?: string[]; // Para múltiples impostores
   assignedSubject?: string;
+  numImpostors: number; // Cantidad de impostores seleccionada
 }
 
 export interface PlayerAssignment {

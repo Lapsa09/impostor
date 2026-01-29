@@ -32,7 +32,11 @@ interface HostControlsProps {
   onNextRound: () => void;
   onChangeTheme: (theme: GameTheme) => void;
   onCloseRoom: () => void;
+  onChangeNumImpostors: (num: number) => void;
   currentTheme: GameTheme;
+  enoughPlayers: boolean;
+  playerCount: number;
+  numImpostors: number;
 }
 
 export function HostControls({
@@ -42,7 +46,11 @@ export function HostControls({
   onNextRound,
   onChangeTheme,
   onCloseRoom,
+  onChangeNumImpostors,
   currentTheme,
+  enoughPlayers,
+  playerCount,
+  numImpostors,
 }: HostControlsProps) {
   const [showThemeEditor, setShowThemeEditor] = useState(false);
   const [selectedTheme, setSelectedTheme] = useState<GameTheme>(currentTheme);
@@ -54,6 +62,13 @@ export function HostControls({
     setShowThemeEditor(false);
   };
 
+  // Calcular el máximo de impostores permitido
+  // Mínimo 1, máximo 1 + (jugadores - 5) / 2
+  const maxImpostors =
+    playerCount > 5 ? Math.floor(1 + (playerCount - 5) / 2) : 1;
+
+  const impostorOptions = Array.from({ length: maxImpostors }, (_, i) => i + 1);
+
   return (
     <Card className="border-yellow-500 border-2">
       <CardHeader>
@@ -63,9 +78,43 @@ export function HostControls({
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-3">
+        {/* Selector de impostores (solo visible si hay más de 5 jugadores) */}
+        {playerCount > 5 && !hasRound && (
+          <div className="p-3 bg-secondary rounded-lg space-y-2">
+            <label className="text-sm font-medium">
+              Cantidad de Impostores: {numImpostors}
+            </label>
+            <Select
+              value={numImpostors.toString()}
+              onValueChange={(value) => onChangeNumImpostors(parseInt(value))}
+            >
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {impostorOptions.map((num) => (
+                  <SelectItem key={num} value={num.toString()}>
+                    {num} {num === 1 ? "Impostor" : "Impostores"}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        )}
+
+        {/* Aviso de jugadores insuficientes */}
+        {!hasRound && !enoughPlayers && (
+          <div className="p-3 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg">
+            <p className="text-sm text-yellow-800 dark:text-yellow-200 text-center">
+              ⚠️ Se necesitan al menos 3 jugadores para iniciar el juego
+            </p>
+          </div>
+        )}
+
         {!hasRound ? (
           <Button
             onClick={onStartRound}
+            disabled={!enoughPlayers}
             className="w-full bg-green-600 hover:bg-green-700"
             size="lg"
           >

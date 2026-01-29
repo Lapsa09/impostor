@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "tsx watch server.ts",
     "build": "next build && tsc --project tsconfig.server.json && tsc-alias -p tsconfig.server.json",
+    "build:ci": "node scripts/init-data.mjs && pnpm run build",
     "start": "cross-env NODE_ENV=production node dist/server.js",
     "lint": "eslint"
   },

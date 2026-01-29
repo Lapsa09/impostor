@@ -67,6 +67,18 @@ npm start
 - Pasar a siguiente ronda
 - Cerrar sala
 
+## 📚 Documentación
+
+Consulta la carpeta [`docs/`](./docs) para más información:
+
+- **[🚀 GitHub Actions CI/CD](./docs/GITHUB_ACTIONS.md)** - Sistema de integración y deploy automático
+- **[Guía de Deployment](./docs/DEPLOYMENT.md)** - Instrucciones para desplegar la aplicación
+- **[Guía de Railway CLI](./docs/RAILWAY_CLI_GUIDE.md)** - Deploy usando Railway CLI
+- **[Guía Manual de Render](./docs/RENDER_MANUAL_GUIDE.md)** - Deploy alternativo en Render.com
+- **[Solución OAuth](./docs/OAUTH_TROUBLESHOOTING.md)** - Troubleshooting de errores de OAuth
+- **[Fix Rápido OAuth](./docs/QUICK_FIX_OAUTH.md)** - Solución rápida para OAuth
+- **[Panel de Administración](./docs/ADMIN_GUIDE.md)** - Gestión de jugadores y equipos
+
 ---
 
 ¡Diviértete jugando al Impostor Futbolero! ⚽🎭
