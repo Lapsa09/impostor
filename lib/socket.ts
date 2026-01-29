@@ -5,7 +5,10 @@ import { generateRoomCode, getRandomSubject } from "@/lib/game-utils";
 import { v4 as uuidv4 } from "uuid";
 
 const rooms = new Map<string, Room>();
-const socketToPlayer = new Map<string, { roomCode: string; playerId: string }>();
+const socketToPlayer = new Map<
+  string,
+  { roomCode: string; playerId: string }
+>();
 
 export function initSocket(httpServer: HTTPServer) {
   const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(",") || [
@@ -66,20 +69,43 @@ export function initSocket(httpServer: HTTPServer) {
     );
 
     // Obtener información de sala
-    socket.on("get-room", ({ roomCode }: { roomCode: string }) => {
-      console.log("get-room solicitado para:", roomCode);
-      const room = rooms.get(roomCode.toUpperCase());
+    socket.on(
+      "get-room",
+      ({ roomCode, playerId }: { roomCode: string; playerId?: string }) => {
+        console.log(
+          "get-room solicitado para:",
+          roomCode,
+          "playerId:",
+          playerId,
+        );
+        const room = rooms.get(roomCode.toUpperCase());
 
-      if (!room) {
-        console.log("Sala no encontrada:", roomCode);
-        socket.emit("room-not-found");
-        return;
-      }
+        if (!room) {
+          console.log("Sala no encontrada:", roomCode);
+          socket.emit("room-not-found");
+          return;
+        }
 
-      console.log("Enviando datos de sala:", roomCode);
-      socket.join(roomCode);
-      socket.emit("room-data", room);
-    });
+        console.log("Enviando datos de sala:", roomCode);
+        socket.join(roomCode);
+
+        // Si tenemos playerId, actualizar el mapping
+        if (playerId) {
+          console.log(
+            "Actualizando mapping para socket:",
+            socket.id,
+            "playerId:",
+            playerId,
+          );
+          socketToPlayer.set(socket.id, {
+            roomCode: roomCode.toUpperCase(),
+            playerId,
+          });
+        }
+
+        socket.emit("room-data", room);
+      },
+    );
 
     // Unirse a sala
     socket.on(
@@ -269,12 +295,7 @@ export function initSocket(httpServer: HTTPServer) {
           return;
         }
 
-        console.log(
-          "Jugador",
-          playerId,
-          "saliendo de sala:",
-          roomCode,
-        );
+        console.log("Jugador", playerId, "saliendo de sala:", roomCode);
 
         // Remover jugador de la sala
         room.players = room.players.filter((p) => p.id !== playerId);
@@ -316,10 +337,10 @@ export function initSocket(httpServer: HTTPServer) {
     // Desconexión
     socket.on("disconnect", () => {
       console.log("Cliente desconectado:", socket.id);
-      
+
       // Buscar el mapping del socket al jugador
       const mapping = socketToPlayer.get(socket.id);
-      
+
       if (!mapping) {
         // Socket no estaba en ninguna sala
         return;
@@ -334,18 +355,13 @@ export function initSocket(httpServer: HTTPServer) {
       }
 
       const player = room.players.find((p) => p.id === playerId);
-      
+
       if (!player) {
         socketToPlayer.delete(socket.id);
         return;
       }
 
-      console.log(
-        "Jugador",
-        player.name,
-        "desconectado de sala:",
-        roomCode,
-      );
+      console.log("Jugador", player.name, "desconectado de sala:", roomCode);
 
       // Remover jugador
       room.players = room.players.filter((p) => p.id !== playerId);
@@ -365,12 +381,7 @@ export function initSocket(httpServer: HTTPServer) {
         room.hostId = newHost.id;
         newHost.isHost = true;
 
-        console.log(
-          "Host transferido a:",
-          newHost.name,
-          "en sala:",
-          roomCode,
-        );
+        console.log("Host transferido a:", newHost.name, "en sala:", roomCode);
 
         io.to(roomCode).emit("host-transferred", {
           newHostId: newHost.id,

@@ -202,25 +202,6 @@ export function RoomClient({ roomCode }: RoomClientProps) {
     };
   }, [socket, isConnected, playerId, initialPlayerName, router]);
 
-  // Cleanup cuando se cierra el navegador o se abandona la página
-  useEffect(() => {
-    const handleBeforeUnload = () => {
-      if (socket && playerId && roomCode) {
-        socket.emit("leave-room", { roomCode, playerId });
-      }
-    };
-
-    window.addEventListener("beforeunload", handleBeforeUnload);
-
-    return () => {
-      window.removeEventListener("beforeunload", handleBeforeUnload);
-      // Emitir leave-room cuando el componente se desmonta
-      if (socket && playerId && roomCode) {
-        socket.emit("leave-room", { roomCode, playerId });
-      }
-    };
-  }, [socket, playerId, roomCode]);
-
   // Funciones de control
   const handleStartRound = () => {
     if (socket) {
@@ -275,7 +256,11 @@ export function RoomClient({ roomCode }: RoomClientProps) {
   return (
     <>
       <div className="max-w-6xl mx-auto space-y-4">
-        <RoomHeader room={room} playerId={playerId} onLeaveRoom={handleLeaveRoom} />
+        <RoomHeader
+          room={room}
+          playerId={playerId}
+          onLeaveRoom={handleLeaveRoom}
+        />
 
         <div className="grid gap-4 md:grid-cols-2">
           <div className="space-y-4">
