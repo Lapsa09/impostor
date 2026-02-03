@@ -8,6 +8,7 @@ import { RoomHeader } from "@/components/room/room-header";
 import { PlayerList } from "@/components/room/player-list";
 import { SubjectCard } from "@/components/room/subject-card";
 import { ShareCard } from "@/components/room/share-card";
+import { StartingPlayerCard } from "@/components/room/starting-player-card";
 import { HostControls } from "@/components/room/host-controls";
 import { ImpostorReveal } from "@/components/room/impostor-reveal";
 import { Card, CardContent } from "@/components/ui/card";
@@ -84,9 +85,7 @@ export function RoomClient({ roomCode }: RoomClientProps) {
       setRoom(data);
 
       if (data.gameStarted) {
-        const isPlayerImpostor = data.impostorIds
-          ? data.impostorIds.includes(playerId)
-          : data.impostorId === playerId;
+        const isPlayerImpostor = data.impostorIds?.includes(playerId) || false;
 
         setIsImpostor(isPlayerImpostor);
         setAssignedSubject(
@@ -109,9 +108,8 @@ export function RoomClient({ roomCode }: RoomClientProps) {
       setRoom(updatedRoom);
 
       if (updatedRoom.gameStarted) {
-        const isPlayerImpostor = updatedRoom.impostorIds
-          ? updatedRoom.impostorIds.includes(newPlayerId)
-          : updatedRoom.impostorId === newPlayerId;
+        const isPlayerImpostor =
+          updatedRoom.impostorIds?.includes(newPlayerId) || false;
 
         setIsImpostor(isPlayerImpostor);
         setAssignedSubject(
@@ -127,9 +125,8 @@ export function RoomClient({ roomCode }: RoomClientProps) {
       setRoom(updatedRoom);
 
       if (updatedRoom.gameStarted) {
-        const isPlayerImpostor = updatedRoom.impostorIds
-          ? updatedRoom.impostorIds.includes(playerId)
-          : updatedRoom.impostorId === playerId;
+        const isPlayerImpostor =
+          updatedRoom.impostorIds?.includes(playerId) || false;
 
         setIsImpostor(isPlayerImpostor);
         setAssignedSubject(
@@ -344,6 +341,15 @@ export function RoomClient({ roomCode }: RoomClientProps) {
           <div className="space-y-4">
             {room.gameStarted && assignedSubject && (
               <SubjectCard subject={assignedSubject} isImpostor={isImpostor} />
+            )}
+
+            {room.gameStarted && room.startingPlayerId && (
+              <StartingPlayerCard
+                playerName={
+                  room.players.find((p) => p.id === room.startingPlayerId)
+                    ?.name || "Desconocido"
+                }
+              />
             )}
 
             <HostControls

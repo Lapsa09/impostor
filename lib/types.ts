@@ -26,10 +26,10 @@ export interface Room {
   players: Player[];
   gameStarted: boolean;
   currentRound: number;
-  impostorId?: string;
-  impostorIds?: string[]; // Para múltiples impostores
+  impostorIds?: string[]; // IDs de los impostores
   assignedSubject?: string;
   numImpostors: number; // Cantidad de impostores seleccionada
+  startingPlayerId?: string; // Jugador que empieza la ronda
 }
 
 export interface PlayerAssignment {

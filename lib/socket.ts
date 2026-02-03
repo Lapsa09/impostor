@@ -167,13 +167,18 @@ export function initSocket(httpServer: HTTPServer) {
         .map((p) => p.id);
 
       room.impostorIds = impostorIds;
-      // Mantener impostorId para compatibilidad (primer impostor)
-      room.impostorId = impostorIds[0];
+
+      // Seleccionar jugador que empieza (aleatorio)
+      const startingPlayer =
+        room.players[Math.floor(Math.random() * room.players.length)];
+      room.startingPlayerId = startingPlayer.id;
 
       // Obtener tema/sujeto aleatorio
       room.assignedSubject = getRandomSubject(room.theme);
       room.gameStarted = true;
       room.currentRound++;
+
+      console.log("Ronda iniciada. Jugador que empieza:", startingPlayer.name);
 
       // Enviar actualización a todos
       io.to(roomCode).emit("room-updated", room);
@@ -247,24 +252,14 @@ export function initSocket(httpServer: HTTPServer) {
           impostorNames,
           subject: room.assignedSubject,
         });
-      } else if (room.impostorId && room.assignedSubject) {
-        // Fallback para compatibilidad
-        const impostor = room.players.find((p) => p.id === room.impostorId);
-        if (impostor) {
-          io.to(roomCode).emit("impostor-reveal", {
-            impostorName: impostor.name,
-            impostorNames: [impostor.name],
-            subject: room.assignedSubject,
-          });
-        }
       }
 
       // Reset para siguiente ronda (después de 3 segundos para mostrar la revelación)
       setTimeout(() => {
         room.gameStarted = false;
-        room.impostorId = undefined;
         room.impostorIds = undefined;
         room.assignedSubject = undefined;
+        room.startingPlayerId = undefined;
 
         io.to(roomCode).emit("round-reset");
         io.to(roomCode).emit("room-updated", room);
