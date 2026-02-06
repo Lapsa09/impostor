@@ -1,14 +1,14 @@
-'use client';
+"use client";
 
-import { useEffect } from 'react';
-import { Button } from '@/components/ui/button';
+import { useEffect } from "react";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
+} from "@/components/ui/card";
 
 export default function Error({
   error,
@@ -19,7 +19,7 @@ export default function Error({
 }) {
   useEffect(() => {
     // Log del error a un servicio de monitoreo
-    console.error('Error en la aplicación:', error);
+    console.error("Error en la aplicación:", error);
   }, [error]);
 
   return (
@@ -34,7 +34,7 @@ export default function Error({
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="text-sm text-muted-foreground text-center">
-          {error.message || 'Error desconocido'}
+          {error.message || "Error desconocido"}
         </div>
         <Button
           onClick={reset}
@@ -43,7 +43,7 @@ export default function Error({
           Intentar de nuevo
         </Button>
         <Button
-          onClick={() => (window.location.href = '/')}
+          onClick={() => (window.location.href = "/")}
           variant="outline"
           className="w-full"
         >

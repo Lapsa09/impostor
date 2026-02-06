@@ -1,22 +1,12 @@
 # 📚 Documentación - Impostor Futbolero# 📚 Documentación - Impostor Futbolero
 
-
-
 Toda la documentación del proyecto está organizada en esta carpeta.Bienvenido a la documentación de Impostor Futbolero. Aquí encontrarás guías detalladas para deployment, administración y troubleshooting.
-
-
 
 ---## 📋 Índice
 
-
-
 ## 🚀 Quick Start### 🤖 CI/CD & Automatización
 
-
-
 **¿Primera vez aquí? Empieza por estos archivos:**- **[GITHUB_ACTIONS.md](./GITHUB_ACTIONS.md)** - Sistema de integración continua y deploy automático con GitHub Actions
-
-
 
 1. 👉 **[quick-start/START_HERE.md](quick-start/START_HERE.md)** - Guía de inicio rápido### 🚀 Deployment
 
@@ -38,35 +28,23 @@ Toda la documentación del proyecto está organizada en esta carpeta.Bienvenido 
 
 **Instrucciones detalladas paso a paso:**- **[QUICK_FIX_OAUTH.md](./QUICK_FIX_OAUTH.md)** - Solución rápida para el error de OAuth
 
-
-
 - **[guides/IMPLEMENTATION_GUIDE.md](guides/IMPLEMENTATION_GUIDE.md)** - Guía de implementación completa### 🔐 Administración
 
 - **[guides/RAILWAY_GUIDE.md](guides/RAILWAY_GUIDE.md)** - Deployment en Railway (5 pasos)
 
 - **[guides/CHECKLIST.md](guides/CHECKLIST.md)** - Checklist de implementación- **[ADMIN_GUIDE.md](./ADMIN_GUIDE.md)** - Guía completa del panel de administración para gestionar jugadores, equipos y mundiales
 
-
-
-------
-
-
+---
 
 ## 📊 Reportes y Análisis## 🚀 Deployment - Resumen Rápido
 
-
-
 **Análisis detallado de mejoras y resultados:**### Opción 1: Railway CLI (Recomendado)
-
-
 
 - **[reports/BEST_PRACTICES_REPORT.md](reports/BEST_PRACTICES_REPORT.md)** - Análisis completo de best practices```bash
 
 - **[reports/COMPLETION_REPORT.md](reports/COMPLETION_REPORT.md)** - Reporte de completación (métricas)# Instalar Railway CLI
 
 - **[reports/CHECKLIST_COMPLETED.md](reports/CHECKLIST_COMPLETED.md)** - Checklist completadonpm i -g @railway/cli
-
-
 
 ---# Login
 
@@ -84,13 +62,11 @@ La documentación anterior del proyecto (deployment guides, OAuth, etc.) está e
 
 ---railway variables set ALLOWED_ORIGINS=https://tu-dominio.railway.app
 
-
-
 ## 📂 Estructura de la Documentación# Deploy
 
 railway up
 
-``````
+````
 
 docs/
 
@@ -232,7 +208,7 @@ pnpm add -D tsc-alias
 
 Si encuentras algún problema no documentado aquí:
 
-**Proyecto:** Impostor Futbolero  
+**Proyecto:** Impostor Futbolero
 
 **Plataforma:** Railway (WebSockets nativos)  1. Revisa la [guía de troubleshooting](./OAUTH_TROUBLESHOOTING.md)
 
@@ -252,3 +228,4 @@ _Última actualización: 6 de febrero de 2026_## 🔄 Actualizaciones
 Esta documentación se actualiza regularmente. Última actualización: Enero 2026
 
 **Volver al [README principal](../README.md)**
+````
