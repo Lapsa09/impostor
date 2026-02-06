@@ -16,6 +16,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Field, FieldLabel } from "@/components/ui/field";
 import { toast } from "sonner";
+import { logger } from "@/lib/logger";
 
 interface RoomClientProps {
   roomCode: string;
@@ -48,11 +49,11 @@ export function RoomClient({ roomCode }: RoomClientProps) {
 
     const initRoom = () => {
       if (playerId) {
-        console.log("Solicitando datos de sala:", roomCode);
+        logger.log("Solicitando datos de sala:", roomCode);
         socket.emit("get-room", { roomCode, playerId });
         initializedRef.current = true;
       } else if (initialPlayerName) {
-        console.log("Uniéndose a sala con nombre:", initialPlayerName);
+        logger.log("Uniéndose a sala con nombre:", initialPlayerName);
         socket.emit("join-room", {
           roomCode,
           playerName: initialPlayerName,
@@ -81,7 +82,7 @@ export function RoomClient({ roomCode }: RoomClientProps) {
     if (!socket || !isConnected) return;
 
     const handleRoomData = (data: Room) => {
-      console.log("Datos de sala recibidos:", data);
+      logger.log("Datos de sala recibidos:", data);
       setRoom(data);
 
       if (data.gameStarted) {
@@ -103,7 +104,7 @@ export function RoomClient({ roomCode }: RoomClientProps) {
       playerId: string;
       room: Room;
     }) => {
-      console.log("Unido a sala, playerId:", newPlayerId);
+      logger.log("Unido a sala, playerId:", newPlayerId);
       setPlayerId(newPlayerId);
       setRoom(updatedRoom);
 
@@ -121,7 +122,7 @@ export function RoomClient({ roomCode }: RoomClientProps) {
     };
 
     const handleRoomUpdated = (updatedRoom: Room) => {
-      console.log("Sala actualizada:", updatedRoom);
+      logger.log("Sala actualizada:", updatedRoom);
       setRoom(updatedRoom);
 
       if (updatedRoom.gameStarted) {
@@ -157,7 +158,7 @@ export function RoomClient({ roomCode }: RoomClientProps) {
     };
 
     const handleError = ({ message }: { message: string }) => {
-      console.error("Error:", message);
+      logger.error("Error:", message);
       toast.error(message);
 
       // Redirigir a la página principal después de mostrar el error
@@ -247,7 +248,7 @@ export function RoomClient({ roomCode }: RoomClientProps) {
   const handleJoinWithName = (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (socket && playerName.trim()) {
-      console.log("Uniéndose a sala con nombre:", playerName);
+      logger.log("Uniéndose a sala con nombre:", playerName);
       socket.emit("join-room", {
         roomCode,
         playerName: playerName.trim(),

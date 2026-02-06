@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Copy, Share2 } from "lucide-react";
 import { toast } from "sonner";
+import { logger } from "@/lib/logger";
 
 interface ShareCardProps {
   roomCode: string;
@@ -22,7 +23,7 @@ export function ShareCard({ roomCode }: ShareCardProps) {
       await navigator.clipboard.writeText(shareUrl);
       toast.success("¡Enlace copiado!");
     } catch (err) {
-      console.error("Error al copiar:", err);
+      logger.error("Error al copiar:", err);
       toast.error("No se pudo copiar el enlace");
     }
   };
@@ -36,7 +37,7 @@ export function ShareCard({ roomCode }: ShareCardProps) {
           url: shareUrl,
         });
       } catch (err) {
-        console.log("Error al compartir:", err);
+        logger.log("Error al compartir:", err);
       }
     } else {
       await handleCopyLink();

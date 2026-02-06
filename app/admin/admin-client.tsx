@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { Plus, Trash2, Save, Lock } from "lucide-react";
+import { logger } from "@/lib/logger";
 
 interface SubjectsData {
   jugadores_actuales: string[];
@@ -62,7 +63,7 @@ export default function AdminClient() {
         router.push("/");
       }
     } catch (error) {
-      console.error("Error:", error);
+      logger.error("Error:", error);
       toast.error("Error al autenticar");
       router.push("/");
     } finally {
@@ -128,7 +129,7 @@ export default function AdminClient() {
         toast.error(error.error || "Error al guardar");
       }
     } catch (error) {
-      console.error("Error:", error);
+      logger.error("Error:", error);
       toast.error("Error al guardar los datos");
     } finally {
       setIsSaving(false);

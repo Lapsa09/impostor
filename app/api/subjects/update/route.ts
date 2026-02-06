@@ -2,6 +2,10 @@ import { NextRequest, NextResponse } from "next/server";
 import fs from "fs/promises";
 import path from "path";
 
+// Configuración del segmento de ruta
+export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs';
+
 const DATA_FILE_PATH = path.join(process.cwd(), "data", "subjects.json");
 
 export async function PUT(request: NextRequest) {

@@ -8,6 +8,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import { logger } from "@/lib/logger";
 import { Field, FieldLabel } from "./ui/field";
 import {
   Select,
@@ -40,7 +41,7 @@ export function CreateRoomForm({ playerName }: CreateRoomFormProps) {
       roomCode: string;
       playerId: string;
     }) => {
-      console.log("Sala creada! Código:", roomCode, "PlayerId:", playerId);
+      logger.log("Sala creada! Código:", roomCode, "PlayerId:", playerId);
       toast.dismiss("creating-room");
       toast.success("¡Sala creada exitosamente!");
       setIsCreating(false);
@@ -50,7 +51,7 @@ export function CreateRoomForm({ playerName }: CreateRoomFormProps) {
     };
 
     const handleError = ({ message }: { message: string }) => {
-      console.error("Error al crear sala:", message);
+      logger.error("Error al crear sala:", message);
       toast.dismiss("creating-room");
       toast.error(message);
       setIsCreating(false);

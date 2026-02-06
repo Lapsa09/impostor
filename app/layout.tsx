@@ -18,8 +18,40 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Impostor Futbolero",
   description: "Juego social de fútbol - ¿Quién es el impostor?",
+  metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'),
+  keywords: ['juego', 'fútbol', 'impostor', 'social', 'multijugador', 'futbol', 'juego de mesa'],
+  authors: [{ name: 'Impostor Futbolero' }],
+  openGraph: {
+    title: 'Impostor Futbolero',
+    description: 'Juego social de fútbol - ¿Quién es el impostor?',
+    type: 'website',
+    locale: 'es_ES',
+    siteName: 'Impostor Futbolero',
+    images: [
+      {
+        url: '/icon1.png',
+        width: 512,
+        height: 512,
+        alt: 'Impostor Futbolero Logo',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Impostor Futbolero',
+    description: 'Juego social de fútbol - ¿Quién es el impostor?',
+    images: ['/icon1.png'],
+  },
   appleWebApp: {
     title: "Impostor",
+    capable: true,
+    statusBarStyle: 'default',
+  },
+  manifest: '/manifest.json',
+  icons: {
+    icon: '/icon1.png',
+    apple: '/apple-icon.png',
+    shortcut: '/icon1.png',
   },
 };
 
