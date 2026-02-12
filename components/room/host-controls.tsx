@@ -70,9 +70,9 @@ export function HostControls({
   const impostorOptions = Array.from({ length: maxImpostors }, (_, i) => i + 1);
 
   return (
-    <Card className="border-yellow-500 border-2">
+    <Card className="border-primary/50 bg-primary/5">
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">
+        <CardTitle className="flex items-center gap-2 text-primary">
           <Settings className="w-5 h-5" />
           Controles de Anfitrión
         </CardTitle>
@@ -80,7 +80,7 @@ export function HostControls({
       <CardContent className="space-y-3">
         {/* Selector de impostores (solo visible si hay más de 5 jugadores) */}
         {playerCount > 5 && !hasRound && (
-          <div className="p-3 bg-secondary rounded-lg space-y-2">
+          <div className="p-3 bg-secondary/50 rounded-lg space-y-2">
             <label className="text-sm font-medium">
               Cantidad de Impostores: {numImpostors}
             </label>
@@ -104,8 +104,8 @@ export function HostControls({
 
         {/* Aviso de jugadores insuficientes */}
         {!hasRound && !enoughPlayers && (
-          <div className="p-3 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg">
-            <p className="text-sm text-yellow-800 dark:text-yellow-200 text-center">
+          <div className="p-3 bg-accent/10 border border-accent/50 rounded-lg">
+            <p className="text-sm text-accent text-center font-bold">
               ⚠️ Se necesitan al menos 3 jugadores para iniciar el juego
             </p>
           </div>
@@ -115,7 +115,7 @@ export function HostControls({
           <Button
             onClick={onStartRound}
             disabled={!enoughPlayers}
-            className="w-full bg-green-600 hover:bg-green-700"
+            className="w-full shadow-[0_0_15px_rgba(var(--primary),0.3)]"
             size="lg"
           >
             <Play className="w-4 h-4 mr-2" />
@@ -124,7 +124,8 @@ export function HostControls({
         ) : (
           <Button
             onClick={onNextRound}
-            className="w-full bg-blue-600 hover:bg-blue-700"
+            className="w-full"
+            variant="secondary"
             size="lg"
           >
             <SkipForward className="w-4 h-4 mr-2" />

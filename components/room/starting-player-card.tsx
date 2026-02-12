@@ -12,8 +12,8 @@ export function StartingPlayerCard({ playerName }: StartingPlayerCardProps) {
     <Card>
       <CardContent className="pt-6">
         <div className="flex items-center gap-3">
-          <div className="p-2 rounded-full bg-blue-600">
-            <Play className="w-5 h-5 text-white" />
+          <div className="p-2 rounded-full bg-primary/20 border border-primary/50">
+            <Play className="w-5 h-5 text-primary" />
           </div>
           <div className="flex-1">
             <p className="text-sm text-muted-foreground">Empieza la ronda:</p>

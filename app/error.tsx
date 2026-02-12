@@ -9,6 +9,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { useRouter } from "next/navigation";
 
 export default function Error({
   error,
@@ -17,6 +18,7 @@ export default function Error({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
+  const router = useRouter();
   useEffect(() => {
     // Log del error a un servicio de monitoreo
     console.error("Error en la aplicación:", error);
@@ -38,14 +40,12 @@ export default function Error({
         </div>
         <Button
           onClick={reset}
-          className="w-full bg-green-600 hover:bg-green-700"
         >
           Intentar de nuevo
         </Button>
         <Button
-          onClick={() => (window.location.href = "/")}
+          onClick={() => router.push("/")}
           variant="outline"
-          className="w-full"
         >
           Volver al inicio
         </Button>

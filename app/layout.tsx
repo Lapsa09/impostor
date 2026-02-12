@@ -1,18 +1,20 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Chakra_Petch, Sora } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const chakraPetch = Chakra_Petch({
+  variable: "--font-chakra-petch",
   subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const sora = Sora({
+  variable: "--font-sora",
   subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700"],
 });
 
 export const metadata: Metadata = {
@@ -71,15 +73,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className="dark">
       <body
-        className={cn(geistSans.variable, geistMono.variable, "antialiased")}
+        className={cn(chakraPetch.variable, sora.variable, "antialiased font-sans")}
       >
-        <main className="min-h-dvh relative grid place-items-center bg-linear-to-br from-green-600 via-green-700 to-green-900 p-4">
+        <main className="min-h-dvh relative grid place-items-center p-4">
           {children}
           <Toaster duration={1500} />
           <Link
-            className="text-xs mx-auto absolute bottom-0 hover:text-white"
+            className="text-xs mx-auto absolute bottom-4 text-muted-foreground hover:text-primary transition-colors"
             href="https://es.vecteezy.com/"
           >
             PNGs por Vecteezy

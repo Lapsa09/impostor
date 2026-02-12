@@ -172,18 +172,13 @@ export default function AdminClient() {
       <CardHeader className="flex flex-col md:flex-row items-center justify-between">
         <CardTitle className="text-2xl">Panel de Administración</CardTitle>
 
-        <Button
-          onClick={handleSave}
-          disabled={isSaving}
-          className="bg-green-600 hover:bg-green-700"
-          size="lg"
-        >
+        <Button onClick={handleSave} disabled={isSaving} size="lg">
           <Save size={16} />
           {isSaving ? "Guardando..." : "Guardar Cambios"}
         </Button>
       </CardHeader>
 
-      <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6">
+      <CardContent className="grid sm:grid-cols-2 md:grid-cols-3 gap-6">
         {(Object.keys(data) as Array<keyof SubjectsData>).map((category) => (
           <div key={category}>
             <div>
@@ -223,7 +218,7 @@ export default function AdminClient() {
                       variant="ghost"
                       size="icon"
                       onClick={() => handleRemoveItem(category, index)}
-                      className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                      className="text-red-600 hover:text-red-700"
                     >
                       <Trash2 className="w-4 h-4" />
                     </Button>
@@ -233,7 +228,7 @@ export default function AdminClient() {
             </div>
           </div>
         ))}
-      </div>
+      </CardContent>
     </Card>
   );
 }

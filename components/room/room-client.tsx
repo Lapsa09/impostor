@@ -41,41 +41,38 @@ export function RoomClient({ roomCode }: RoomClientProps) {
     impostorName: string;
     subject: string;
   } | null>(null);
-  const initializedRef = useRef(false);
-
-  // Inicialización
+  // Inicialización y manejo de conexión
   useEffect(() => {
-    if (initializedRef.current || !socket) return;
+    if (!socket || !isConnected) return;
+
+    // Si ya tenemos room y estamos conectados, no necesitamos hacer nada
+    // (a menos que queramos reconectar lógica específica, pero por ahora asumimos que el estado se mantiene)
+    if (room && playerId) return;
 
     const initRoom = () => {
       if (playerId) {
         logger.log("Solicitando datos de sala:", roomCode);
         socket.emit("get-room", { roomCode, playerId });
-        initializedRef.current = true;
       } else if (initialPlayerName) {
         logger.log("Uniéndose a sala con nombre:", initialPlayerName);
         socket.emit("join-room", {
           roomCode,
           playerName: initialPlayerName,
         });
-        initializedRef.current = true;
+      } else if (!showNameForm && playerName) {
+        // Caso: Nombre ingresado manualmente
+        logger.log("Uniéndose a sala con nombre manual:", playerName);
+        socket.emit("join-room", {
+          roomCode,
+          playerName,
+        });
       }
-      // Si no hay playerId ni name, mostrar formulario de nombre (no redirigir)
     };
 
-    if (isConnected) {
-      initRoom();
-    } else {
-      const handleConnect = () => {
-        initRoom();
-        socket.off("connect", handleConnect);
-      };
-      socket.on("connect", handleConnect);
-      return () => {
-        socket.off("connect", handleConnect);
-      };
-    }
-  }, [socket, isConnected, roomCode, playerId, initialPlayerName, router]);
+    initRoom();
+
+    // Cleanup no necesario para emit
+  }, [socket, isConnected, roomCode, playerId, initialPlayerName, showNameForm, playerName, room]);
 
   // Socket listeners
   useEffect(() => {
@@ -247,14 +244,10 @@ export function RoomClient({ roomCode }: RoomClientProps) {
 
   const handleJoinWithName = (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (socket && playerName.trim()) {
-      logger.log("Uniéndose a sala con nombre:", playerName);
-      socket.emit("join-room", {
-        roomCode,
-        playerName: playerName.trim(),
-      });
+    if (playerName.trim()) {
+      setPlayerName(playerName.trim()); // Ensure trimmed name is in state
       setShowNameForm(false);
-      initializedRef.current = true;
+      // La lógica de unión se maneja en el useEffect cuando showNameForm cambia a false
     }
   };
 
@@ -267,7 +260,7 @@ export function RoomClient({ roomCode }: RoomClientProps) {
             <h2 className="text-2xl font-bold">Unirse a la sala</h2>
             <p className="text-muted-foreground">
               Código de sala:{" "}
-              <span className="font-bold text-green-600">{roomCode}</span>
+              <span className="font-bold text-primary font-mono text-xl tracking-widest">{roomCode}</span>
             </p>
           </div>
           <form onSubmit={handleJoinWithName} className="space-y-4">
@@ -286,7 +279,7 @@ export function RoomClient({ roomCode }: RoomClientProps) {
               <Button
                 type="submit"
                 disabled={!playerName.trim() || !isConnected}
-                className="w-full bg-green-600 hover:bg-green-700"
+                className="w-full"
                 size="lg"
               >
                 Unirse

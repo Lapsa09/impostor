@@ -52,7 +52,7 @@ export function ShareCard({ roomCode }: ShareCardProps) {
             <p className="text-sm text-muted-foreground">
               Comparte este código con tus amigos:
             </p>
-            <div className="text-4xl font-bold tracking-wider text-green-600">
+            <div className="text-4xl font-bold tracking-wider text-primary font-display drop-shadow-[0_0_10px_rgba(var(--primary),0.5)]">
               {roomCode}
             </div>
           </div>

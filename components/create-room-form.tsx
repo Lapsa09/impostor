@@ -110,7 +110,7 @@ export function CreateRoomForm({ playerName }: CreateRoomFormProps) {
         <Button
           type="submit"
           disabled={isCreating || !isConnected}
-          className="w-full bg-green-600 hover:bg-green-700"
+          className="w-full"
           size="lg"
         >
           {isCreating ? "Creando..." : "Crear Sala"}

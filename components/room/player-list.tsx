@@ -17,16 +17,15 @@ export function PlayerList({ room, playerId }: PlayerListProps) {
           {room.players.map((player) => (
             <li
               key={player.id}
-              className={`flex items-center justify-between p-3 rounded-lg ${
-                player.id === playerId
-                  ? "bg-green-100 border-2 border-green-500"
-                  : "bg-secondary"
-              }`}
+              className={`flex items-center justify-between p-3 rounded-lg border transition-all ${player.id === playerId
+                  ? "bg-primary/10 border-primary text-primary shadow-[0_0_10px_rgba(var(--primary),0.2)]"
+                  : "bg-secondary/30 border-transparent hover:bg-secondary/50 text-foreground"
+                }`}
             >
-              <span className="font-medium">{player.name}</span>
+              <span className="font-medium font-sora">{player.name}</span>
               {player.id === room.hostId && (
-                <span className="text-xs bg-yellow-400 text-yellow-900 px-2 py-1 rounded-full font-semibold">
-                  Anfitrión
+                <span className="text-[10px] uppercase tracking-wider bg-accent/20 text-accent border border-accent/50 px-2 py-0.5 rounded-sm font-bold">
+                  Host
                 </span>
               )}
             </li>

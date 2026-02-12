@@ -72,7 +72,7 @@ export function HomeForm() {
               ? !playerName.trim() || !roomCode.trim()
               : !playerName.trim()
           }
-          className="w-full bg-green-600 hover:bg-green-700"
+          className="w-full"
           size="lg"
         >
           {showJoinForm ? "Unirse" : "Crear Sala"}

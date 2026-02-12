@@ -10,40 +10,42 @@ export function SubjectCard({ subject, isImpostor }: SubjectCardProps) {
   return (
     <Card
       className={
-        isImpostor ? "border-red-500 border-2" : "border-green-500 border-2"
+        isImpostor
+          ? "border-destructive/50 bg-destructive/10 backdrop-blur-md"
+          : "border-primary/50 bg-primary/5 backdrop-blur-md"
       }
     >
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           {isImpostor ? (
             <>
-              <EyeOff className="w-5 h-5 text-red-600" />
-              <span className="text-red-600">Eres el Impostor</span>
+              <EyeOff className="w-5 h-5 text-destructive" />
+              <span className="text-destructive font-bold">Eres el Impostor</span>
             </>
           ) : (
             <>
-              <Eye className="w-5 h-5 text-green-600" />
-              <span className="text-green-600">Tu tema</span>
+              <Eye className="w-5 h-5 text-primary" />
+              <span className="text-primary font-bold">Tu tema</span>
             </>
           )}
         </CardTitle>
       </CardHeader>
       <CardContent>
         <div
-          className={`text-center p-6 rounded-lg ${
-            isImpostor ? "bg-red-50" : "bg-green-50"
-          }`}
+          className={`text-center p-6 rounded-lg border ${isImpostor
+              ? "bg-destructive/10 border-destructive/20"
+              : "bg-primary/10 border-primary/20"
+            }`}
         >
           <p
-            className={`text-3xl font-bold ${
-              isImpostor ? "text-red-700" : "text-green-700"
-            }`}
+            className={`text-3xl font-bold font-display uppercase tracking-wider ${isImpostor ? "text-destructive" : "text-primary"
+              }`}
           >
             {subject}
           </p>
         </div>
         {isImpostor && (
-          <p className="text-sm text-muted-foreground mt-4 text-center">
+          <p className="text-sm text-destructive/80 mt-4 text-center font-medium">
             Intenta pasar desapercibido y descubre el tema de los demás
           </p>
         )}
