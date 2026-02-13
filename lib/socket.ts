@@ -52,6 +52,7 @@ export function initSocket(httpServer: HTTPServer) {
           gameStarted: false,
           currentRound: 0,
           numImpostors: 1, // Por defecto 1 impostor
+          usedSubjects: [], // Inicializar array de temas usados
         };
 
         rooms.set(roomCode, room);
@@ -173,12 +174,23 @@ export function initSocket(httpServer: HTTPServer) {
         room.players[Math.floor(Math.random() * room.players.length)];
       room.startingPlayerId = startingPlayer.id;
 
-      // Obtener tema/sujeto aleatorio
-      room.assignedSubject = getRandomSubject(room.theme);
+      // Inicializar array de temas usados si no existe
+      if (!room.usedSubjects) {
+        room.usedSubjects = [];
+      }
+
+      // Obtener tema/sujeto aleatorio que no haya sido usado
+      room.assignedSubject = getRandomSubject(room.theme, room.usedSubjects);
+
+      // Agregar el tema usado al historial
+      room.usedSubjects.push(room.assignedSubject);
+
       room.gameStarted = true;
       room.currentRound++;
 
       console.log("Ronda iniciada. Jugador que empieza:", startingPlayer.name);
+      console.log("Tema asignado:", room.assignedSubject);
+      console.log("Temas usados en sala:", room.usedSubjects.length);
 
       // Enviar actualización a todos
       io.to(roomCode).emit("room-updated", room);
@@ -197,6 +209,14 @@ export function initSocket(httpServer: HTTPServer) {
 
         room.theme = theme;
         // Generar año aleatorio si la temática lo requiere
+
+        // Al cambiar el tema, limpiar el historial de temas usados
+        room.usedSubjects = [];
+        console.log(
+          "Tema cambiado a:",
+          theme,
+          "- Historial de temas reiniciado",
+        );
 
         io.to(roomCode).emit("theme-updated", {
           theme,

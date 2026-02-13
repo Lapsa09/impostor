@@ -30,6 +30,7 @@ export interface Room {
   assignedSubject?: string;
   numImpostors: number; // Cantidad de impostores seleccionada
   startingPlayerId?: string; // Jugador que empieza la ronda
+  usedSubjects?: string[]; // Temas ya usados en esta sala
 }
 
 export interface PlayerAssignment {

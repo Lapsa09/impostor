@@ -61,10 +61,29 @@ export function getSubjectsForTheme(theme: GameTheme): string[] {
   }
 }
 
-export function getRandomSubject(theme: GameTheme): string {
+export function getRandomSubject(
+  theme: GameTheme,
+  usedSubjects: string[] = [],
+): string {
   const subjects = getSubjectsForTheme(theme);
-  return subjects[Math.floor(Math.random() * subjects.length)];
+
+  // Filtrar los temas ya usados
+  const availableSubjects = subjects.filter(
+    (subject) => !usedSubjects.includes(subject),
+  );
+
+  // Si todos los temas fueron usados, reiniciar (permitir repetir)
+  if (availableSubjects.length === 0) {
+    console.log("Todos los temas fueron usados, reiniciando lista");
+    return subjects[Math.floor(Math.random() * subjects.length)];
+  }
+
+  // Seleccionar un tema aleatorio de los disponibles
+  return availableSubjects[
+    Math.floor(Math.random() * availableSubjects.length)
+  ];
 }
+
 export function generateRoomCode(): string {
   const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
   let code = "";
